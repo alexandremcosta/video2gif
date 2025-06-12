@@ -1,7 +1,11 @@
 ## Install
 
 1. Install ffmpeg: `brew install ffmpeg`
-2. Move the .app file to your Applications folder
+2. Download the latest release: 
+3. Move the .app file to your Applications folder
+
+## Demo
+![Demo image](demo.gif)
 
 ## Build
 
@@ -30,6 +34,3 @@ export PATH="$PATH:$(go env GOPATH)/bin"
 ```sh
 fyne package -os darwin -icon icon.png -name video2gif
 ```
-
-## Demo
-![Demo image](demo.gif)
