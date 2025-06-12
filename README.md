@@ -1,8 +1,9 @@
 ## Install
 
 1. Install ffmpeg: `brew install ffmpeg`
-2. Download the latest release: 
-3. Move the .app file to your Applications folder
+2. Download the [latest release zip file](https://github.com/alexandremcosta/video2gif/releases)
+3. Extract the zip file
+4. Move the .app file to `Applications/` folder
 
 ## Demo
 ![Demo image](demo.gif)
