@@ -30,3 +30,6 @@ export PATH="$PATH:$(go env GOPATH)/bin"
 ```sh
 fyne package -os darwin -icon icon.png -name video2gif
 ```
+
+## Demo
+![Demo image](demo.png)
