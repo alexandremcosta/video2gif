@@ -32,4 +32,4 @@ fyne package -os darwin -icon icon.png -name video2gif
 ```
 
 ## Demo
-![Demo image](demo.png)
+![Demo image](demo.gif)

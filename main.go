@@ -22,12 +22,11 @@ var supportedVideoExts = map[string]bool{
 }
 
 func main() {
-	// Ensure ffmpeg and ffprobe paths are accessible even from GUI .app
 	_ = os.Setenv("PATH", os.Getenv("PATH")+":/opt/homebrew/bin:/usr/local/bin")
 
 	myApp := app.New()
 	w := myApp.NewWindow("video2gif")
-	w.Resize(fyne.NewSize(500, 320))
+	w.Resize(fyne.NewSize(500, 360))
 
 	var videoFile string
 	var outputPath string
@@ -37,6 +36,18 @@ func main() {
 
 	fileLabel := widget.NewLabel("No file selected")
 	outputLabel := widget.NewLabel("")
+
+	// Radio buttons for screen size
+	sizeOptions := map[string]string{
+		"Large (960px)":  "960",
+		"Medium (640px)": "640",
+		"Small (480px)":  "480",
+	}
+	sizeSelected := "960"
+	sizeRadio := widget.NewRadioGroup([]string{"Large (960px)", "Medium (640px)", "Small (480px)"}, func(s string) {
+		sizeSelected = sizeOptions[s]
+	})
+	sizeRadio.SetSelected("Large (960px)")
 
 	viewButton := widget.NewButton("View GIF", func() {
 		if outputPath != "" {
@@ -83,12 +94,13 @@ func main() {
 		startTime := fmt.Sprintf("00:00:%02d.000", startSec)
 		output := strings.TrimSuffix(videoFile, filepath.Ext(videoFile)) + ".gif"
 
+		filter := fmt.Sprintf("[0:v]fps=10,scale=%s:-1:flags=lanczos,split[x][z];[z]palettegen=stats_mode=diff:max_colors=128[p];[x][p]paletteuse=dither=sierra2_4a", sizeSelected)
+
 		cmd := exec.Command("ffmpeg",
 			"-ss", startTime,
 			"-t", fmt.Sprintf("%d", duration),
 			"-i", videoFile,
-			"-filter_complex",
-			"[0:v]fps=10,scale=960:-1:flags=lanczos,split[x][z];[z]palettegen=stats_mode=diff:max_colors=128[p];[x][p]paletteuse=dither=sierra2_4a",
+			"-filter_complex", filter,
 			"-y", output,
 		)
 
@@ -113,6 +125,8 @@ func main() {
 			widget.NewFormItem("Start Second", startSecEntry),
 			widget.NewFormItem("End Second", endSecEntry),
 		),
+		widget.NewLabel("Screen Size:"),
+		sizeRadio,
 		runButton,
 		viewButton,
 		outputLabel,
@@ -140,7 +154,6 @@ func getVideoDuration(filePath string) (float64, error) {
 }
 
 func openWithDefaultBrowser(filePath string) {
-	// Copy GIF to a safe temp location
 	targetGIF := filepath.Join(os.TempDir(), "video2gif-preview.gif")
 	inputBytes, err := os.ReadFile(filePath)
 	if err != nil {
@@ -148,7 +161,6 @@ func openWithDefaultBrowser(filePath string) {
 	}
 	_ = os.WriteFile(targetGIF, inputBytes, 0644)
 
-	// Create minimal HTML wrapper
 	html := fmt.Sprintf(`<html><body style="margin:0"><img src="file://%s" style="width:100%%;max-width:100vw"/></body></html>`, targetGIF)
 	tmpHTML := filepath.Join(os.TempDir(), "video2gif-preview.html")
 	_ = os.WriteFile(tmpHTML, []byte(html), 0644)
