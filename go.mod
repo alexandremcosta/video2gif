@@ -1,4 +1,4 @@
-module ffmpeg-ui
+module video2gif
 
 go 1.24.3
 

@@ -5,7 +5,7 @@
 	<key>CFBundleName</key>
 	<string>video2gif</string>
 	<key>CFBundleExecutable</key>
-	<string>ffmpeg-ui</string>
+	<string>video2gif</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.example.video2gif</string>
 	<key>CFBundleIconFile</key>
